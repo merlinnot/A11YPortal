@@ -1,0 +1,6 @@
+{
+  "hosting": {
+    "public": ".",
+    "ignore": ["buddy.yml", "firebase.json", "styles/**/*.scss"]
+  }
+}

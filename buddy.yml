@@ -1,0 +1,44 @@
+- pipeline: 'deploy:staging'
+  trigger_mode: ON_EVERY_PUSH
+  ref_name: master
+  ref_type: BRANCH
+  target_site_url: 'https://staging.a11y.merlinnot.com'
+  clone_depth: 1
+  actions:
+    - action: >-
+        Execute: firebase deploy --token "$FIREBASE_TOKEN" --project
+        com-merlinnot-a11y-staging
+      type: BUILD
+      working_directory: /buddy/a11yportal
+      docker_image_name: library/node
+      docker_image_tag: '10'
+      execute_commands:
+        - >-
+          firebase deploy --token "$FIREBASE_TOKEN" --project
+          com-merlinnot-a11y-staging
+      setup_commands:
+        - npm install -g firebase-tools
+      mount_filesystem_path: /buddy/a11yportal
+      shell: BASH
+      trigger_condition: ALWAYS
+- pipeline: 'deploy:production'
+  trigger_mode: ON_EVERY_PUSH
+  ref_name: refs/tags/*
+  ref_type: WILDCARD
+  target_site_url: 'https://a11y.merlinnot.com'
+  clone_depth: 1
+  actions:
+    - action: >-
+        Execute: firebase deploy --token "$FIREBASE_TOKEN"' --project
+        com-merlinnot-a11y
+      type: BUILD
+      working_directory: /buddy/a11yportal
+      docker_image_name: library/node
+      docker_image_tag: '10'
+      execute_commands:
+        - firebase deploy --token "$FIREBASE_TOKEN" --project com-merlinnot-a11y
+      setup_commands:
+        - npm install -g firebase-tools
+      mount_filesystem_path: /buddy/a11yportal
+      shell: BASH
+      trigger_condition: ALWAYS
